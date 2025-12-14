@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Он / Она / Оно</title>
+<style>
+body{
+  margin:0; font-family:Arial, sans-serif; background:#f4f6fa;
+  display:flex; justify-content:center; align-items:center; min-height:100vh;
+}
+.game{
+  width:1000px; background:#fff; border-radius:20px; padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+.header{ text-align:center; font-size:26px; margin-bottom:20px; }
+.columns{ display:flex; gap:20px; }
+.column{
+  flex:1; background:#eef1f7; border-radius:16px; padding:15px; min-height:420px;
+}
+.column h3{ text-align:center; margin-top:0; }
+.word{
+  padding:12px 16px; margin-bottom:10px; border-radius:12px;
+  font-size:20px; font-weight:600; cursor:grab; color:#fff;
+}
+.correct{ background:#c8ffcf !important; }
+</style>
+</head>
+<body>
+<div class="game">
+  <div class="header">Kelimeleri doğru sütuna sürükle</div>
+  <div class="columns">
+    <div class="column" id="masc"><h3>ОН</h3></div>
+    <div class="column" id="fem"><h3>ОНА</h3></div>
+    <div class="column" id="neut"><h3>ОНО</h3></div>
+  </div>
+</div>
+
+<script>
+const words = [
+  // ОН (мужской род)
+  {word:'го́род', gender:'masc'},
+  {word:'стол', gender:'masc'},
+  {word:'сын', gender:'masc'},
+  {word:'брат', gender:'masc'},
+  {word:'уро́к', gender:'masc'},
+  {word:'шкаф', gender:'masc'},
+  {word:'каранда́ш', gender:'masc'},
+  {word:'нож', gender:'masc'},
+  {word:'шарф', gender:'masc'},
+
+  // ОНА (женский род)
+  {word:'су́мка', gender:'fem'},
+  {word:'страна́', gender:'fem'},
+  {word:'ры́ба', gender:'fem'},
+  {word:'ма́ма', gender:'fem'},
+  {word:'бу́ква', gender:'fem'},
+  {word:'шко́ла', gender:'fem'},
+  {word:'ло́жка', gender:'fem'},
+  {word:'ко́мната', gender:'fem'},
+
+  // ОНО (средний род)
+  {word:'окно́', gender:'neut'},
+  {word:'молоко́', gender:'neut'},
+  {word:'сло́во', gender:'neut'},
+  {word:'за́втра', gender:'neut'}
+];
+
+// renkler kaldırıldı
+
+function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+let pool = document.createElement('div');
+pool.style.marginTop = '20px';
+document.querySelector('.game').appendChild(pool);
+
+shuffle(words);
+
+words.forEach((item,i)=>{
+  const w=document.createElement('div');
+  w.className='word';
+  w.textContent=item.word;
+  w.style.background = '#e0e0e0'; w.style.color = '#000';
+  w.draggable=true;
+  w.dataset.gender=item.gender;
+  w.addEventListener('dragstart',()=>window.dragged=w);
+  pool.appendChild(w);
+});
+
+['masc','fem','neut'].forEach(id=>{
+  const col=document.getElementById(id);
+  col.addEventListener('dragover',e=>e.preventDefault());
+  col.addEventListener('drop',()=>{
+    if(window.dragged && window.dragged.dataset.gender===id){
+      window.dragged.classList.add('correct');
+      col.appendChild(window.dragged);
+      window.dragged=null;
+    }
+  });
+});
+</script>
+</body>
+</html>
